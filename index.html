@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lynx - Advanced AI Trading Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #ffffff;
+            --secondary: #000000;
+            --accent: #333333;
+            --light: #f5f5f5;
+            --dark: #0a0a0a;
+            --text: #ffffff;
+            --text-dark: #000000;
+            --gray: #888888;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--secondary);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary);
+            font-weight: bold;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+            font-size: 0.9rem;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: rgba(0, 0, 0, 0.95);
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            z-index: 1;
+            border-radius: 8px;
+            padding: 10px 0;
+            border: 1px solid var(--border);
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 10px 20px;
+            font-size: 0.85rem;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .cta-button {
+            background: var(--primary);
+            color: var(--secondary);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Page Content */
+        .page {
+            display: none;
+            padding: 120px 0 60px;
+            min-height: 100vh;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 180px 0 100px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 50px;
+        }
+
+        .hero-text {
+            flex: 1;
+            z-index: 2;
+        }
+
+        .hero-visual {
+            flex: 1;
+            position: relative;
+            height: 400px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: var(--gray);
+            max-width: 500px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .secondary-button {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .secondary-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animated Background Elements */
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .floating-element:nth-child(3) {
+            width: 70px;
+            height: 70px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+        }
+
+        /* Advanced Animations */
+        .grid-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, transparent 24px, rgba(255,255,255,0.02) 25px, rgba(255,255,255,0.02) 26px, transparent 27px, transparent 74px, rgba(255,255,255,0.02) 75px, rgba(255,255,255,0.02) 76px, transparent 77px),
+                linear-gradient(0deg, transparent 24px, rgba(255,255,255,0.02) 25px, rgba(255,255,255,0.02) 26px, transparent 27px, transparent 74px, rgba(255,255,255,0.02) 75px, rgba(255,255,255,0.02) 76px, transparent 77px);
+            background-size: 100px 100px;
+            animation: gridMove 20s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes gridMove {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(100px, 100px);
+            }
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: particleFloat 20s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* App Mockup */
+        .app-mockup {
+            position: absolute;
+            width: 250px;
+            height: 500px;
+            background: #111;
+            border-radius: 30px;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            animation: appFloat 8s ease-in-out infinite;
+        }
+
+        @keyframes appFloat {
+            0%, 100% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            25% {
+                transform: translate(-50%, -52%) rotate(1deg);
+            }
+            50% {
+                transform: translate(-50%, -48%) rotate(-1deg);
+            }
+            75% {
+                transform: translate(-50%, -52%) rotate(1deg);
+            }
+        }
+
+        .app-screen {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-header {
+            height: 60px;
+            background: rgba(10, 10, 10, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .app-content {
+            padding: 20px;
+        }
+
+        .chart-container {
+            height: 150px;
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-line {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+            animation: chartAnimation 5s infinite;
+        }
+
+        @keyframes chartAnimation {
+            0% {
+                height: 2px;
+                opacity: 0.5;
+            }
+            50% {
+                height: 120px;
+                opacity: 1;
+            }
+            100% {
+                height: 2px;
+                opacity: 0.5;
+            }
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .data-value {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .positive {
+            color: #10b981;
+        }
+
+        .negative {
+            color: #ef4444;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background: var(--dark);
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: rgba(20, 20, 20, 0.5);
+            border-radius: 15px;
+            padding: 30px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .pricing-card {
+            background: rgba(20, 20, 20, 0.5);
+            border-radius: 15px;
+            padding: 40px 30px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card.featured {
+            border: 2px solid var(--primary);
+            transform: scale(1.05);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .pricing-card.featured:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        .pricing-header {
+            margin-bottom: 30px;
+        }
+
+        .pricing-name {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .pricing-period {
+            color: var(--gray);
+            font-size: 1rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pricing-features i {
+            color: var(--primary);
+        }
+
+        /* Blog Section */
+        .blog {
+            padding: 100px 0;
+            background: var(--dark);
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .blog-card {
+            background: rgba(20, 20, 20, 0.5);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid var(--border);
+            cursor: pointer;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .blog-image {
+            height: 200px;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blog-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .blog-content {
+            padding: 20px;
+        }
+
+        .blog-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .blog-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .blog-excerpt {
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+
+        /* Forms */
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(20, 20, 20, 0.5);
+            border-radius: 15px;
+            padding: 40px;
+            border: 1px solid var(--border);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            padding: 50px 0 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-column a:hover {
+            color: var(--primary);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--primary);
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            color: var(--secondary);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-buttons {
+                justify-content: center;
+            }
+            
+            nav ul {
+                display: none;
+            }
+            
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+            
+            .pricing-card.featured:hover {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Community Styles */
+        .community-posts {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .post-card {
+            background: rgba(20, 20, 20, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            transition: transform 0.3s;
+        }
+
+        .post-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .post-author {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .post-date {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .post-content {
+            margin-bottom: 15px;
+            color: var(--text);
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 20px;
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--gray);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .post-action:hover {
+            color: var(--primary);
+        }
+
+        .post-action.active {
+            color: var(--primary);
+        }
+
+        /* Development Notice */
+        .development-notice {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(20, 20, 20, 0.5);
+            border-radius: 15px;
+            border: 1px solid var(--border);
+            margin: 50px 0;
+        }
+
+        .development-notice i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .development-notice h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .development-notice p {
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        /* Custom Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--dark);
+            border-radius: 15px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid var(--border);
+            position: relative;
+            animation: modalFadeIn 0.3s;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal h2 {
+            margin-bottom: 20px;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        .modal p {
+            margin-bottom: 20px;
+            color: var(--gray);
+            text-align: center;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-img">
+                        <svg width="40" height="40" viewBox="0 0 285 286" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M0 0 C94.05 0 188.1 0 285 0 C285 94.38 285 188.76 285 286 C190.95 286 96.9 286 0 286 C0 191.62 0 97.24 0 0 Z" fill="#FDFDFD"/>
+                            <path d="M0 0 C1.37679137 4.13037411 -0.16043043 6.81904153 -1.6875 10.6875 C-1.96352051 11.40486328 -2.23954102 12.12222656 -2.52392578 12.86132812 C-4.42258827 17.72561526 -6.51106256 22.40503857 -9 27 C-8.34 27.33 -7.68 27.66 -7 28 C-7.61258667 28.64231567 -7.61258667 28.64231567 -8.23754883 29.29760742 C-10.1006239 31.25644185 -11.95658781 33.22187871 -13.8125 35.1875 C-14.45509766 35.86103516 -15.09769531 36.53457031 -15.75976562 37.22851562 C-18.98379594 40.65300379 -21.7082832 43.86134039 -24 48 C-24.721875 48.70125 -25.44375 49.4025 -26.1875 50.125 C-28.34751105 51.92485573 -28.34751105 51.92485573 -28 55 C-30.54399967 57.32278231 -32.90623941 59.45311971 -36 61 C-37.05352843 63.30965848 -38.05719096 65.6429774 -39 68 C-39.66 67.67 -40.32 67.34 -41 67 C-44.42353587 68.21480305 -46.01180815 70.01771223 -48 73 C-47.34 73.33 -46.68 73.66 -46 74 C-47.03060547 74.45439453 -47.03060547 74.45439453 -48.08203125 74.91796875 C-54.86232742 77.99109804 -54.86232742 77.99109804 -59 84 C-59.66 84 -60.32 84 -61 84 C-61.33 84.99 -61.66 85.98 -62 87 C-61.34 87.66 -60.68 88.32 -60 89 C-63 91 -63 91 -66 91 C-66.33 91.99 -66.66 92.98 -67 94 C-67.9590625 94.2165625 -67.9590625 94.2165625 -68.9375 94.4375 C-69.618125 94.623125 -70.29875 94.80875 -71 95 C-71.70151152 96.3153341 -72.36525925 97.65117592 -73 99 C-76.13733844 102.02529064 -78.78829741 102.32612759 -83 103 C-85.02915769 103.93942486 -87.03875312 104.92598385 -89 106 C-86.69 106 -84.38 106 -82 106 C-83.75 108 -83.75 108 -86 110 C-87.32 110 -88.64 110 -90 110 C-90 110.99 -90 111.98 -90 113 C-93.72965139 115.03435531 -95.66905042 116 -100 116 C-103.21696962 117.15008886 -103.21696962 117.15008886 -106 119 C-106.3721042 120.32303717 -106.70630173 121.65737935 -107 123 C-109.32846653 124.72757194 -111.8197116 125.91102271 -114.4140625 127.19140625 C-115.28804688 127.62324219 -116.16203125 128.05507812 -117.0625 128.5 C-118.31740234 129.10328125 -118.31740234 129.10328125 -119.59765625 129.71875 C-122.03467675 130.93674501 -122.03467675 130.93674501 -124.14453125 132.62890625 C-126 134 -126 134 -128.625 134.4375 C-131.17808944 134.75071571 -131.17808944 134.75071571 -132.3125 137.0625 C-132.539375 137.701875 -132.76625 138.34125 -133 139 C-132.34 139.66 -131.68 140.32 -131 141 C-138.4742268 143.83505155 -138.4742268 143.83505155 -142.1875 145 C-145.86905655 146.30899788 -148.93819537 147.81077881 -151.5625 150.75 C-152.2740625 151.36875 -152.2740625 151.36875 -153 152 C-154.9375 151.6875 -154.9375 151.6875 -157 151 C-158.32 151 -159.64 151 -161 151 C-161 152.32 -161 153.64 -161 155 C-162.4540625 155.4021875 -162.4540625 155.4021875 -163.9375 155.8125 C-168.33927765 157.06758935 -172.66618846 158.53019958 -177 160 C-177.99 160.33 -178.98 160.66 -180 161 C-180 162.32 -180 163.64 -180 165 C-181.093125 165.433125 -182.18625 165.86625 -183.3125 166.3125 C-186.09408793 167.49495641 -188.06361939 168.60800043 -190 171 C-190.33 170.34 -190.66 169.68 -191 169 C-191.69867188 169.28875 -192.39734375 169.5775 -193.1171875 169.875 C-194.02726562 170.24625 -194.93734375 170.6175 -195.875 171 C-196.77992188 171.37125 -197.68484375 171.7425 -198.6171875 172.125 C-201 173 -201 173 -203 173 C-203 173.99 -203 174.98 -203 176 C-204.794375 176.61875 -204.794375 176.61875 -206.625 177.25 C-209.47468545 178.30303613 -211.40857235 179.28686995 -213.9375 181.0625 C-216.8291593 182.89191711 -218.08162454 183.29824301 -221.3125 183.8125 C-227.01196085 184.84964679 -230.75215404 188.2442213 -235 192 C-235.66 191.67 -236.32 191.34 -237 191 C-235.44395612 189.38957012 -233.87987244 187.78690632 -232.3125 186.1875 C-231.44238281 185.29417969 -230.57226562 184.40085938 -229.67578125 183.48046875 C-223.76377953 178 -223.76377953 178 -220 178 C-220 177.01 -220 176.02 -220 175 C-218.329375 174.5978125 -218.329375 174.5978125 -216.625 174.1875 C-212.78159049 173.34190981 -212.78159049 173.34190981 -211 170 C-210.34 170 -209.68 170 -209 170 C-208.34 168.35 -207.68 166.7 -207 165 C-206.34 165 -205.68 165 -205 165 C-205 165.66 -205 166.32 -205 167 C-200.17557816 165.73053486 -200.17557816 165.73053486 -197 162 C-194.70599535 161.35374123 -192.45191578 161.05570889 -190.09375 160.72265625 C-187.81646787 160.19457039 -187.81646787 160.19457039 -186.8515625 157.98046875 C-186.57054687 157.32691406 -186.28953125 156.67335937 -186 156 C-183.875 155.25 -183.875 155.25 -182 155 C-182 154.01 -182 153.02 -182 152 C-180.35 152 -178.7 152 -177 152 C-177 151.34 -177 150.68 -177 150 C-174.525 149.01 -174.525 149.01 -172 148 C-172.495 145.525 -172.495 145.525 -173 143 C-172.34 143 -171.68 143 -171 143 C-171 144.32 -171 145.64 -171 147 C-169.35 147 -167.7 147 -166 147 C-166.33 145.68 -166.66 144.36 -167 143 C-163.04 142.01 -163.04 142.01 -159 141 C-159 140.34 -159 139.68 -159 139 C-158.36191406 138.95101562 -157.72382813 138.90203125 -157.06640625 138.8515625 C-155.82697266 138.73941406 -155.82697266 138.73941406 -154.5625 138.625 C-153.73878906 138.55539063 -152.91507812 138.48578125 -152.06640625 138.4140625 C-151.38449219 138.27742187 -150.70257813 138.14078125 -150 138 C-149.67 137.34 -149.34 136.68 -149 136 C-148.01 136 -147.02 136 -146 136 C-146.66 135.67 -147.32 135.34 -148 135 C-147.67 134.01 -147.34 133.02 -147 132 C-143.71303767 131.20046862 -142.28976808 130.90341064 -139 132 C-136.91620491 128.15299368 -135.50313376 124.09945571 -134 120 C-133.34 120 -132.68 120 -132 120 C-131.01 121.485 -131.01 121.485 -130 123 C-129.34 122.34 -128.68 121.68 -128 121 C-127.13375 120.7525 -126.2675 120.505 -125.375 120.25 C-121.55518686 118.83525439 -118.97685415 116.87679161 -115.83203125 114.33984375 C-114 113 -114 113 -111 112 C-110.08571661 110.09291157 -110.08571661 110.09291157 -110 108 C-110.66 107.34 -111.32 106.68 -112 106 C-109.525 105.505 -109.525 105.505 -107 105 C-106.67 103.68 -106.34 102.36 -106 101 C-105.360625 100.896875 -104.72125 100.79375 -104.0625 100.6875 C-103.381875 100.460625 -102.70125 100.23375 -102 100 C-101.67 99.01 -101.34 98.02 -101 97 C-98.69 97 -96.38 97 -94 97 C-94 96.34 -94 95.68 -94 95 C-94.99 94.67 -95.98 94.34 -97 94 C-94.525 93.01 -94.525 93.01 -92 92 C-91.67 92.66 -91.34 93.32 -91 94 C-90.79375 93.360625 -90.5875 92.72125 -90.375 92.0625 C-89 90 -89 90 -85.875 89.25 C-84.92625 89.1675 -83.9775 89.085 -83 89 C-83 87.68 -83 86.36 -83 85 C-76.375 81 -76.375 81 -73 81 C-73 80.34 -73 79.68 -73 79 C-73.99 78.67 -74.98 78.34 -76 78 C-75.195625 77.87625 -74.39125 77.7525 -73.5625 77.625 C-72.716875 77.41875 -71.87125 77.2125 -71 77 C-70.67 76.34 -70.34 75.68 -70 75 C-69.01 74.67 -68.02 74.34 -67 74 C-66.26676204 71.98491642 -66.26676204 71.98491642 -66 70 C-62.535 69.505 -62.535 69.505 -59 69 C-58.67 67.02 -58.34 65.04 -58 63 C-56.68 62.67 -55.36 62.34 -54 62 C-53.34 58.7 -52.68 55.4 -52 52 C-49.69 52.33 -47.38 52.66 -45 53 C-45 51.68 -45 50.36 -45 49 C-42.69 49.33 -40.38 49.66 -38 50 C-38 48.68 -38 47.36 -38 46 C-37.34 45.67 -36.68 45.34 -36 45 C-35.938125 44.29875 -35.87625 43.5975 -35.8125 42.875 C-34.39764904 37.86860428 -30.08330328 34.90724948 -26.3359375 31.4765625 C-24.75134425 29.9240162 -24.75134425 29.9240162 -24 27 C-20.60953012 23.31891842 -16.94421809 20.06772518 -13 17 C-12.34 17 -11.68 17 -11 17 C-10.7421875 16.44441406 -10.484375 15.88882813 -10.21875 15.31640625 C-8.83666175 12.68955262 -7.22120938 10.35521572 -5.5 7.9375 C-3.63418777 5.30876031 -1.78832004 2.68248007 0 0 Z" fill="#171717" transform="translate(276,40)"/>
+                        </svg>
+                    </div>
+                    <span>Lynx</span>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" data-page="home">Home</a></li>
+                        <li class="dropdown">
+                            <a href="#" data-page="features">Features</a>
+                            <div class="dropdown-content">
+                                <a href="#" data-page="how-it-works">How It Works</a>
+                                <a href="#" data-page="coming-soon">Coming Soon</a>
+                            </div>
+                        </li>
+                        <li><a href="#" data-page="pricing">Pricing</a></li>
+                        <li class="dropdown">
+                            <a href="#" data-page="api">API</a>
+                            <div class="dropdown-content">
+                                <a href="#" data-page="integrations">Integrations</a>
+                                <a href="#" data-page="documentation">Documentation</a>
+                                <a href="#" data-page="tutorials">Tutorials</a>
+                            </div>
+                        </li>
+                        <li><a href="#" data-page="blog">Blog</a></li>
+                        <li><a href="#" data-page="community">Community</a></li>
+                        <li class="dropdown">
+                            <a href="#" data-page="about">About</a>
+                            <div class="dropdown-content">
+                                <a href="#" data-page="careers">Careers</a>
+                                <a href="#" data-page="contact">Contact</a>
+                                <a href="#" data-page="privacy">Privacy</a>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+                <a href="#" class="cta-button" id="login-btn">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Home Page -->
+    <section id="home" class="page active">
+        <div class="hero">
+            <div class="grid-animation"></div>
+            <div class="particles" id="particles"></div>
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1>Advanced AI Trading Intelligence</h1>
+                        <p>Harness the power of artificial intelligence to make smarter trading decisions. Our advanced algorithms analyze market data in real-time to give you the competitive edge.</p>
+                        <div class="hero-buttons">
+                            <a href="#" class="cta-button" data-page="pricing">Get Started</a>
+                            <a href="#" class="secondary-button" data-page="how-it-works">Learn More</a>
+                        </div>
+                    </div>
+                    <div class="hero-visual">
+                        <div class="floating-element"></div>
+                        <div class="floating-element"></div>
+                        <div class="floating-element"></div>
+                        <div class="app-mockup">
+                            <div class="app-screen">
+                                <div class="app-header">
+                                    <div class="app-logo">Lynx AI</div>
+                                    <div class="app-status">
+                                        <i class="fas fa-signal"></i>
+                                    </div>
+                                </div>
+                                <div class="app-content">
+                                    <div class="chart-container">
+                                        <div class="chart-line"></div>
+                                    </div>
+                                    <div class="data-row">
+                                        <span class="data-label">BTC/USD</span>
+                                        <span class="data-value positive">+2.34%</span>
+                                    </div>
+                                    <div class="data-row">
+                                        <span class="data-label">ETH/USD</span>
+                                        <span class="data-value positive">+1.67%</span>
+                                    </div>
+                                    <div class="data-row">
+                                        <span class="data-label">SOL/USD</span>
+                                        <span class="data-value negative">-0.45%</span>
+                                    </div>
+                                    <div class="data-row">
+                                        <span class="data-label">AI Confidence</span>
+                                        <span class="data-value">87%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="container">
+                <h2 class="section-title">Advanced Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>Neural Network Analysis</h3>
+                        <p>Our AI uses deep learning to identify complex market patterns that human traders often miss.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3>Real-Time Execution</h3>
+                        <p>Execute trades in milliseconds with our low-latency infrastructure and optimized algorithms.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Risk Management</h3>
+                        <p>Advanced risk assessment tools protect your investments from unexpected market movements.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Predictive Analytics</h3>
+                        <p>Forecast market trends with our proprietary predictive models and historical data analysis.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>Automated Trading</h3>
+                        <p>Set your parameters and let our AI execute trades automatically based on your strategy.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3>Cross-Platform Sync</h3>
+                        <p>Seamlessly switch between devices with real-time synchronization of all your data and settings.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Page -->
+    <section id="how-it-works" class="page">
+        <div class="container">
+            <div class="features" style="padding: 120px 0 60px;">
+                <h2 class="section-title">How Lynx Works</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h3>Data Collection</h3>
+                        <p>Lynx collects real-time market data from multiple exchanges and sources, processing terabytes of information daily to identify patterns and opportunities.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>AI Analysis</h3>
+                        <p>Our neural networks analyze the collected data, identifying subtle patterns and correlations that human traders would likely miss.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h3>Signal Generation</h3>
+                        <p>Based on the analysis, Lynx generates trading signals with confidence scores, helping you make informed decisions.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3>Execution</h3>
+                        <p>With our low-latency infrastructure, Lynx can execute trades in milliseconds, taking advantage of fleeting market opportunities.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Risk Management</h3>
+                        <p>Lynx continuously monitors positions and market conditions, automatically adjusting strategies to manage risk according to your preferences.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <h3>Continuous Learning</h3>
+                        <p>The system learns from every trade, continuously improving its algorithms and adapting to changing market conditions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Coming Soon Page -->
+    <section id="coming-soon" class="page">
+        <div class="container">
+            <div class="development-notice">
+                <i class="fas fa-rocket"></i>
+                <h2>Coming Soon</h2>
+                <p>We're constantly working on new features and improvements for Lynx. Here's what you can expect in the near future:</p>
+                <div style="text-align: left; max-width: 600px; margin: 0 auto;">
+                    <h3 style="color: var(--primary); margin: 30px 0 15px;">Advanced Portfolio Management</h3>
+                    <p style="color: var(--gray); margin-bottom: 20px;">Automated portfolio rebalancing and optimization based on your risk tolerance and investment goals.</p>
+                    
+                    <h3 style="color: var(--primary); margin: 30px 0 15px;">Social Trading</h3>
+                    <p style="color: var(--gray); margin-bottom: 20px;">Follow and copy the strategies of successful traders in our community.</p>
+                    
+                    <h3 style="color: var(--primary); margin: 30px 0 15px;">Mobile App</h3>
+                    <p style="color: var(--gray); margin-bottom: 20px;">Full-featured mobile application for iOS and Android, allowing you to monitor and manage your trades on the go.</p>
+                    
+                    <h3 style="color: var(--primary); margin: 30px 0 15px;">Advanced Analytics</h3>
+                    <p style="color: var(--gray); margin-bottom: 20px;">Deeper insights into your trading performance with advanced visualization and reporting tools.</p>
+                </div>
+                <p style="margin-top: 30px;">Expected launch: Q1 2026</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Page -->
+    <section id="pricing" class="page">
+        <div class="container">
+            <div class="pricing" style="padding: 120px 0 60px;">
+                <h2 class="section-title">Simple, Transparent Pricing</h2>
+                
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h3 class="pricing-name">Free</h3>
+                            <div class="pricing-price">$0</div>
+                            <div class="pricing-period">forever</div>
+                        </div>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check"></i> Basic AI trading signals</li>
+                            <li><i class="fas fa-check"></i> Access to 5 markets</li>
+                            <li><i class="fas fa-check"></i> Community support</li>
+                        </ul>
+                        <button class="cta-button" style="width: 100%;" onclick="showPlanModal('free')">Get Started</button>
+                    </div>
+                    
+                    <div class="pricing-card featured">
+                        <div class="pricing-header">
+                            <h3 class="pricing-name">Premium</h3>
+                            <div class="pricing-price">$10</div>
+                            <div class="pricing-period">per month</div>
+                        </div>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check"></i> All Free features</li>
+                            <li><i class="fas fa-check"></i> Advanced AI trading signals</li>
+                            <li><i class="fas fa-check"></i> Access to 50+ markets</li>
+                            <li><i class="fas fa-check"></i> Priority support</li>
+                            <li><i class="fas fa-check"></i> Basic portfolio analytics</li>
+                        </ul>
+                        <button class="cta-button" style="width: 100%;" onclick="showPlanModal('premium')">Get Started</button>
+                    </div>
+                    
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h3 class="pricing-name">Ultra-Premium</h3>
+                            <div class="pricing-price">$20</div>
+                            <div class="pricing-period">per month</div>
+                        </div>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check"></i> All Premium features</li>
+                            <li><i class="fas fa-check"></i> Premium AI trading signals</li>
+                            <li><i class="fas fa-check"></i> Unlimited market access</li>
+                            <li><i class="fas fa-check"></i> 24/7 dedicated support</li>
+                            <li><i class="fas fa-check"></i> Advanced portfolio analytics</li>
+                        </ul>
+                        <button class="cta-button" style="width: 100%;" onclick="showPlanModal('ultra-premium')">Get Started</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- API Page -->
+    <section id="api" class="page">
+        <div class="container">
+            <div class="development-notice">
+                <i class="fas fa-tools"></i>
+                <h2>API Under Development</h2>
+                <p>Our powerful API is currently in development. We're building a secure, scalable interface that will allow developers to integrate Lynx's AI trading capabilities into their own applications.</p>
+                <p>Expected features include real-time market data, trading execution, portfolio management, and advanced analytics endpoints.</p>
+                <p>Stay tuned for updates on our release timeline.</p>
+                <a href="#" class="secondary-button" data-page="contact">Contact Us for Early Access</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Integrations Page -->
+    <section id="integrations" class="page">
+        <div class="container">
+            <div class="development-notice">
+                <i class="fas fa-puzzle-piece"></i>
+                <h2>Integrations Coming Soon</h2>
+                <p>We're working on seamless integrations with popular trading platforms, exchanges, and financial tools. Our goal is to make Lynx the central hub for all your trading activities.</p>
+                <p>Planned integrations include connections to major cryptocurrency exchanges, traditional brokerage APIs, portfolio tracking tools, and tax reporting software.</p>
+                <a href="#" class="secondary-button" data-page="contact">Suggest an Integration</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documentation Page -->
+    <section id="documentation" class="page">
+        <div class="container">
+            <div class="development-notice">
+                <i class="fas fa-book"></i>
+                <h2>Documentation in Progress</h2>
+                <p>Our comprehensive documentation is currently being developed. It will include detailed guides, API references, tutorials, and best practices for using Lynx effectively.</p>
+                <p>We're committed to providing clear, thorough documentation to help you make the most of our platform's capabilities.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutorials Page -->
+    <section id="tutorials" class="page">
+        <div class="container">
+            <div class="development-notice">
+                <i class="fas fa-graduation-cap"></i>
+                <h2>Tutorials Coming Soon</h2>
+                <p>We're creating a comprehensive library of tutorials to help you master Lynx's features. From basic setup to advanced trading strategies, our tutorials will guide you every step of the way.</p>
+                <p>Content will include video walkthroughs, written guides, and interactive examples to suit different learning styles.</p>
+                <a href="#" class="secondary-button" data-page="blog">Visit Our Blog</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Page -->
+    <section id="blog" class="page">
+        <div class="container">
+            <div style="padding: 120px 0 60px;">
+                <h2 class="section-title">Lynx Blog</h2>
+                <p style="text-align: center; max-width: 600px; margin: 0 auto 50px; color: var(--gray);">Stay updated with the latest news, insights, and trading strategies from our team.</p>
+                
+                <div class="loading" id="blog-loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <div class="blog-grid" id="blog-grid" style="display: none;">
+                    <!-- Blog posts will be loaded here dynamically -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Page -->
+    <section id="community" class="page">
+        <div class="container">
+            <div style="padding: 120px 0 60px;">
+                <h2 class="section-title">Lynx Community</h2>
+                <p style="text-align: center; max-width: 600px; margin: 0 auto 50px; color: var(--gray);">Connect with other traders, share strategies, and learn from the community.</p>
+                
+                <div class="community-posts">
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div class="post-avatar">SK</div>
+                            <div>
+                                <div class="post-author">Sean K</div>
+                                <div class="post-date">November 8, 2025</div>
+                            </div>
+                        </div>
+                        <div class="post-content">
+                            <p>Just tried the new portfolio rebalancing feature and it's amazing! The AI suggested some adjustments that immediately improved my diversification. Highly recommend checking it out.</p>
+                        </div>
+                        <div class="post-actions">
+                            <div class="post-action">
+                                <i class="far fa-heart"></i>
+                                <span>12</span>
+                            </div>
+                            <div class="post-action">
+                                <i class="far fa-comment"></i>
+                                <span>5</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div class="post-avatar">TJ</div>
+                            <div>
+                                <div class="post-author">TraderJane</div>
+                                <div class="post-date">November 5, 2025</div>
+                            </div>
+                        </div>
+                        <div class="post-content">
+                            <p>Has anyone else noticed the improved accuracy of the BTC predictions after the latest algorithm update? My returns have increased by 8% this week alone!</p>
+                        </div>
+                        <div class="post-actions">
+                            <div class="post-action">
+                                <i class="far fa-heart"></i>
+                                <span>24</span>
+                            </div>
+                            <div class="post-action">
+                                <i class="far fa-comment"></i>
+                                <span>14</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div class="post-avatar">CM</div>
+                            <div>
+                                <div class="post-author">CryptoMax</div>
+                                <div class="post-date">November 2, 2025</div>
+                            </div>
+                        </div>
+                        <div class="post-content">
+                            <p>Looking for advice on setting up automated strategies for altcoin trading. Any recommendations for parameters that have worked well for others?</p>
+                        </div>
+                        <div class="post-actions">
+                            <div class="post-action">
+                                <i class="far fa-heart"></i>
+                                <span>7</span>
+                            </div>
+                            <div class="post-action">
+                                <i class="far fa-comment"></i>
+                                <span>9</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Page -->
+    <section id="about" class="page">
+        <div class="container">
+            <div style="padding: 120px 0 60px;">
+                <h2 class="section-title">About Lynx</h2>
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <p style="margin-bottom: 30px; color: var(--gray);">Lynx was founded with a simple mission: to democratize access to advanced trading intelligence. We believe that everyone should have the tools to make informed financial decisions, regardless of their experience level.</p>
+                    
+                    <h3 style="margin: 40px 0 20px; color: var(--primary);">Our Story</h3>
+                    <p style="margin-bottom: 30px; color: var(--gray);">The idea for Lynx emerged from our founder's frustration with the complexity and inaccessibility of professional trading tools. After years of working in quantitative finance, Sean K set out to create a platform that would make sophisticated trading algorithms available to everyone.</p>
+                    
+                    <h3 style="margin: 40px 0 20px; color: var(--primary);">Our Technology</h3>
+                    <p style="margin-bottom: 30px; color: var(--gray);">Lynx leverages cutting-edge machine learning algorithms and real-time data processing to deliver accurate trading signals and insights. Our system continuously learns from market data to improve its predictions and adapt to changing market conditions.</p>
+                    
+                    <h3 style="margin: 40px 0 20px; color: var(--primary);">Our Team</h3>
+                    <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 30px;">
+                        <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; color: var(--primary); font-weight: bold; font-size: 1.5rem;">SK</div>
+                        <div>
+                            <h4 style="color: var(--primary); margin-bottom: 5px;">Sean K</h4>
+                            <p style="color: var(--gray);">Founder & CEO</p>
+                            <p style="color: var(--gray); font-size: 0.9rem;">Former quantitative analyst with 10+ years of experience in algorithmic trading and machine learning.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Careers Page -->
+    <section id="careers" class="page">
+        <div class="container">
+            <div class="development-notice">
+                <i class="fas fa-briefcase"></i>
+                <h2>Career Opportunities Coming Soon</h2>
+                <p>We're growing quickly and will soon be looking for talented individuals to join our team. If you're passionate about fintech, AI, and creating products that make a difference, we'd love to hear from you.</p>
+                <p>We'll be hiring for roles in engineering, data science, product management, and more. Check back soon for open positions.</p>
+                <a href="#" class="secondary-button" data-page="contact">Express Interest</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Page -->
+    <section id="contact" class="page">
+        <div class="container">
+            <div style="padding: 120px 0 60px;">
+                <h2 class="section-title">Contact Us</h2>
+                <p style="text-align: center; max-width: 600px; margin: 0 auto 50px; color: var(--gray);">Have questions or need support? We're here to help.</p>
+                
+                <div style="text-align: center; margin-top: 50px;">
+                    <h3 style="color: var(--primary); margin-bottom: 20px;">Get in Touch</h3>
+                    <p style="color: var(--gray); margin-bottom: 10px;">Email: sssean.kk@gmail.com</p>
+                    <p style="color: var(--gray); margin-bottom: 30px;">Discord: <a href="https://discord.gg/HqNK9vzdxn" style="color: var(--primary);">Join our server</a></p>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeu8lnGe0tYj5zX9lRNvPahoXb7QhAJzFLMzXmFEA1RhrmOLw/viewform?usp=dialog" class="cta-button" target="_blank">Contact Form</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy Policy Page -->
+    <section id="privacy" class="page">
+        <div class="container">
+            <div style="padding: 120px 0 60px;">
+                <h2 class="section-title">Privacy Policy</h2>
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <div style="margin-bottom: 40px;">
+                        <h3 style="color: var(--primary); margin-bottom: 15px;">Information We Collect</h3>
+                        <p style="color: var(--gray);">We collect information you provide directly to us, such as when you create an account, use our services, or contact us for support. This may include your name, email address, and trading preferences.</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 40px;">
+                        <h3 style="color: var(--primary); margin-bottom: 15px;">How We Use Your Information</h3>
+                        <p style="color: var(--gray);">We use the information we collect to provide, maintain, and improve our services, to develop new ones, and to protect Lynx and our users. We also use this information to offer you tailored content.</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 40px;">
+                        <h3 style="color: var(--primary); margin-bottom: 15px;">Information Sharing</h3>
+                        <p style="color: var(--gray);">We do not sell, trade, or otherwise transfer your personally identifiable information to outside parties unless we provide users with advance notice. This does not include website hosting partners and other parties who assist us in operating our website, conducting our business, or serving our users, so long as those parties agree to keep this information confidential.</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 40px;">
+                        <h3 style="color: var(--primary); margin-bottom: 15px;">Data Security</h3>
+                        <p style="color: var(--gray);">We implement a variety of security measures to maintain the safety of your personal information when you enter, submit, or access your personal information. All sensitive information is transmitted via Secure Socket Layer (SSL) technology and then encrypted into our databases to be only accessed as stated above.</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 40px;">
+                        <h3 style="color: var(--primary); margin-bottom: 15px;">Changes to This Policy</h3>
+                        <p style="color: var(--gray);">We may update this privacy policy from time to time. We will notify you of any changes by posting the new privacy policy on this page. You are advised to review this privacy policy periodically for any changes.</p>
+                    </div>
+                    
+                    <div>
+                        <h3 style="color: var(--primary); margin-bottom: 15px;">Contact Us</h3>
+                        <p style="color: var(--gray);">If you have any questions about this privacy policy, please contact us at sssean.kk@gmail.com.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <div class="logo">
+                        <div class="logo-img">
+                            <svg width="40" height="40" viewBox="0 0 285 286" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0 0 C94.05 0 188.1 0 285 0 C285 94.38 285 188.76 285 286 C190.95 286 96.9 286 0 286 C0 191.62 0 97.24 0 0 Z" fill="#FDFDFD"/>
+                                <path d="M0 0 C1.37679137 4.13037411 -0.16043043 6.81904153 -1.6875 10.6875 C-1.96352051 11.40486328 -2.23954102 12.12222656 -2.52392578 12.86132812 C-4.42258827 17.72561526 -6.51106256 22.40503857 -9 27 C-8.34 27.33 -7.68 27.66 -7 28 C-7.61258667 28.64231567 -7.61258667 28.64231567 -8.23754883 29.29760742 C-10.1006239 31.25644185 -11.95658781 33.22187871 -13.8125 35.1875 C-14.45509766 35.86103516 -15.09769531 36.53457031 -15.75976562 37.22851562 C-18.98379594 40.65300379 -21.7082832 43.86134039 -24 48 C-24.721875 48.70125 -25.44375 49.4025 -26.1875 50.125 C-28.34751105 51.92485573 -28.34751105 51.92485573 -28 55 C-30.54399967 57.32278231 -32.90623941 59.45311971 -36 61 C-37.05352843 63.30965848 -38.05719096 65.6429774 -39 68 C-39.66 67.67 -40.32 67.34 -41 67 C-44.42353587 68.21480305 -46.01180815 70.01771223 -48 73 C-47.34 73.33 -46.68 73.66 -46 74 C-47.03060547 74.45439453 -47.03060547 74.45439453 -48.08203125 74.91796875 C-54.86232742 77.99109804 -54.86232742 77.99109804 -59 84 C-59.66 84 -60.32 84 -61 84 C-61.33 84.99 -61.66 85.98 -62 87 C-61.34 87.66 -60.68 88.32 -60 89 C-63 91 -63 91 -66 91 C-66.33 91.99 -66.66 92.98 -67 94 C-67.9590625 94.2165625 -67.9590625 94.2165625 -68.9375 94.4375 C-69.618125 94.623125 -70.29875 94.80875 -71 95 C-71.70151152 96.3153341 -72.36525925 97.65117592 -73 99 C-76.13733844 102.02529064 -78.78829741 102.32612759 -83 103 C-85.02915769 103.93942486 -87.03875312 104.92598385 -89 106 C-86.69 106 -84.38 106 -82 106 C-83.75 108 -83.75 108 -86 110 C-87.32 110 -88.64 110 -90 110 C-90 110.99 -90 111.98 -90 113 C-93.72965139 115.03435531 -95.66905042 116 -100 116 C-103.21696962 117.15008886 -103.21696962 117.15008886 -106 119 C-106.3721042 120.32303717 -106.70630173 121.65737935 -107 123 C-109.32846653 124.72757194 -111.8197116 125.91102271 -114.4140625 127.19140625 C-115.28804688 127.62324219 -116.16203125 128.05507812 -117.0625 128.5 C-118.31740234 129.10328125 -118.31740234 129.10328125 -119.59765625 129.71875 C-122.03467675 130.93674501 -122.03467675 130.93674501 -124.14453125 132.62890625 C-126 134 -126 134 -128.625 134.4375 C-131.17808944 134.75071571 -131.17808944 134.75071571 -132.3125 137.0625 C-132.539375 137.701875 -132.76625 138.34125 -133 139 C-132.34 139.66 -131.68 140.32 -131 141 C-138.4742268 143.83505155 -138.4742268 143.83505155 -142.1875 145 C-145.86905655 146.30899788 -148.93819537 147.81077881 -151.5625 150.75 C-152.2740625 151.36875 -152.2740625 151.36875 -153 152 C-154.9375 151.6875 -154.9375 151.6875 -157 151 C-158.32 151 -159.64 151 -161 151 C-161 152.32 -161 153.64 -161 155 C-162.4540625 155.4021875 -162.4540625 155.4021875 -163.9375 155.8125 C-168.33927765 157.06758935 -172.66618846 158.53019958 -177 160 C-177.99 160.33 -178.98 160.66 -180 161 C-180 162.32 -180 163.64 -180 165 C-181.093125 165.433125 -182.18625 165.86625 -183.3125 166.3125 C-186.09408793 167.49495641 -188.06361939 168.60800043 -190 171 C-190.33 170.34 -190.66 169.68 -191 169 C-191.69867188 169.28875 -192.39734375 169.5775 -193.1171875 169.875 C-194.02726562 170.24625 -194.93734375 170.6175 -195.875 171 C-196.77992188 171.37125 -197.68484375 171.7425 -198.6171875 172.125 C-201 173 -201 173 -203 173 C-203 173.99 -203 174.98 -203 176 C-204.794375 176.61875 -204.794375 176.61875 -206.625 177.25 C-209.47468545 178.30303613 -211.40857235 179.28686995 -213.9375 181.0625 C-216.8291593 182.89191711 -218.08162454 183.29824301 -221.3125 183.8125 C-227.01196085 184.84964679 -230.75215404 188.2442213 -235 192 C-235.66 191.67 -236.32 191.34 -237 191 C-235.44395612 189.38957012 -233.87987244 187.78690632 -232.3125 186.1875 C-231.44238281 185.29417969 -230.57226562 184.40085938 -229.67578125 183.48046875 C-223.76377953 178 -223.76377953 178 -220 178 C-220 177.01 -220 176.02 -220 175 C-218.329375 174.5978125 -218.329375 174.5978125 -216.625 174.1875 C-212.78159049 173.34190981 -212.78159049 173.34190981 -211 170 C-210.34 170 -209.68 170 -209 170 C-208.34 168.35 -207.68 166.7 -207 165 C-206.34 165 -205.68 165 -205 165 C-205 165.66 -205 166.32 -205 167 C-200.17557816 165.73053486 -200.17557816 165.73053486 -197 162 C-194.70599535 161.35374123 -192.45191578 161.05570889 -190.09375 160.72265625 C-187.81646787 160.19457039 -187.81646787 160.19457039 -186.8515625 157.98046875 C-186.57054687 157.32691406 -186.28953125 156.67335937 -186 156 C-183.875 155.25 -183.875 155.25 -182 155 C-182 154.01 -182 153.02 -182 152 C-180.35 152 -178.7 152 -177 152 C-177 151.34 -177 150.68 -177 150 C-174.525 149.01 -174.525 149.01 -172 148 C-172.495 145.525 -172.495 145.525 -173 143 C-172.34 143 -171.68 143 -171 143 C-171 144.32 -171 145.64 -171 147 C-169.35 147 -167.7 147 -166 147 C-166.33 145.68 -166.66 144.36 -167 143 C-163.04 142.01 -163.04 142.01 -159 141 C-159 140.34 -159 139.68 -159 139 C-158.36191406 138.95101562 -157.72382813 138.90203125 -157.06640625 138.8515625 C-155.82697266 138.73941406 -155.82697266 138.73941406 -154.5625 138.625 C-153.73878906 138.55539063 -152.91507812 138.48578125 -152.06640625 138.4140625 C-151.38449219 138.27742187 -150.70257813 138.14078125 -150 138 C-149.67 137.34 -149.34 136.68 -149 136 C-148.01 136 -147.02 136 -146 136 C-146.66 135.67 -147.32 135.34 -148 135 C-147.67 134.01 -147.34 133.02 -147 132 C-143.71303767 131.20046862 -142.28976808 130.90341064 -139 132 C-136.91620491 128.15299368 -135.50313376 124.09945571 -134 120 C-133.34 120 -132.68 120 -132 120 C-131.01 121.485 -131.01 121.485 -130 123 C-129.34 122.34 -128.68 121.68 -128 121 C-127.13375 120.7525 -126.2675 120.505 -125.375 120.25 C-121.55518686 118.83525439 -118.97685415 116.87679161 -115.83203125 114.33984375 C-114 113 -114 113 -111 112 C-110.08571661 110.09291157 -110.08571661 110.09291157 -110 108 C-110.66 107.34 -111.32 106.68 -112 106 C-109.525 105.505 -109.525 105.505 -107 105 C-106.67 103.68 -106.34 102.36 -106 101 C-105.360625 100.896875 -104.72125 100.79375 -104.0625 100.6875 C-103.381875 100.460625 -102.70125 100.23375 -102 100 C-101.67 99.01 -101.34 98.02 -101 97 C-98.69 97 -96.38 97 -94 97 C-94 96.34 -94 95.68 -94 95 C-94.99 94.67 -95.98 94.34 -97 94 C-94.525 93.01 -94.525 93.01 -92 92 C-91.67 92.66 -91.34 93.32 -91 94 C-90.79375 93.360625 -90.5875 92.72125 -90.375 92.0625 C-89 90 -89 90 -85.875 89.25 C-84.92625 89.1675 -83.9775 89.085 -83 89 C-83 87.68 -83 86.36 -83 85 C-76.375 81 -76.375 81 -73 81 C-73 80.34 -73 79.68 -73 79 C-73.99 78.67 -74.98 78.34 -76 78 C-75.195625 77.87625 -74.39125 77.7525 -73.5625 77.625 C-72.716875 77.41875 -71.87125 77.2125 -71 77 C-70.67 76.34 -70.34 75.68 -70 75 C-69.01 74.67 -68.02 74.34 -67 74 C-66.26676204 71.98491642 -66.26676204 71.98491642 -66 70 C-62.535 69.505 -62.535 69.505 -59 69 C-58.67 67.02 -58.34 65.04 -58 63 C-56.68 62.67 -55.36 62.34 -54 62 C-53.34 58.7 -52.68 55.4 -52 52 C-49.69 52.33 -47.38 52.66 -45 53 C-45 51.68 -45 50.36 -45 49 C-42.69 49.33 -40.38 49.66 -38 50 C-38 48.68 -38 47.36 -38 46 C-37.34 45.67 -36.68 45.34 -36 45 C-35.938125 44.29875 -35.87625 43.5975 -35.8125 42.875 C-34.39764904 37.86860428 -30.08330328 34.90724948 -26.3359375 31.4765625 C-24.75134425 29.9240162 -24.75134425 29.9240162 -24 27 C-20.60953012 23.31891842 -16.94421809 20.06772518 -13 17 C-12.34 17 -11.68 17 -11 17 C-10.7421875 16.44441406 -10.484375 15.88882813 -10.21875 15.31640625 C-8.83666175 12.68955262 -7.22120938 10.35521572 -5.5 7.9375 C-3.63418777 5.30876031 -1.78832004 2.68248007 0 0 Z" fill="#171717" transform="translate(276,40)"/>
+                            </svg>
+                        </div>
+                        <span>Lynx</span>
+                    </div>
+                    <p>Advanced artificial intelligence for modern traders.</p>
+                    <div class="social-links">
+                        <a href="https://www.youtube.com/@OfficialLynxCrypto" target="_blank"><i class="fab fa-youtube"></i></a>
+                        <a href="https://discord.gg/HqNK9vzdxn" target="_blank"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Product</h3>
+                    <ul>
+                        <li><a href="#" data-page="features">Features</a></li>
+                        <li><a href="#" data-page="pricing">Pricing</a></li>
+                        <li><a href="#" data-page="api">API</a></li>
+                        <li><a href="#" data-page="integrations">Integrations</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="#" data-page="documentation">Documentation</a></li>
+                        <li><a href="#" data-page="tutorials">Tutorials</a></li>
+                        <li><a href="#" data-page="blog">Blog</a></li>
+                        <li><a href="#" data-page="community">Community</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#" data-page="about">About Us</a></li>
+                        <li><a href="#" data-page="careers">Careers</a></li>
+                        <li><a href="#" data-page="contact">Contact</a></li>
+                        <li><a href="#" data-page="privacy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Lynx. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <h2>Login to Lynx</h2>
+            <p>This feature is still in development. Please check back soon!</p>
+            <button class="cta-button" style="width: 100%; margin-top: 20px;" id="close-login-modal">Close</button>
+        </div>
+    </div>
+
+    <!-- Plan Selection Modal -->
+    <div id="plan-modal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <h2 id="plan-modal-title">Plan Selection</h2>
+            <p id="plan-modal-message">This plan is still under development. Please check back soon!</p>
+            <button class="cta-button" style="width: 100%; margin-top: 20px;" id="close-plan-modal">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Page Navigation
+        document.querySelectorAll('nav a, .footer-column a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageId = this.getAttribute('data-page');
+                if (pageId) {
+                    // Hide all pages
+                    document.querySelectorAll('.page').forEach(page => {
+                        page.classList.remove('active');
+                    });
+                    
+                    // Show selected page
+                    document.getElementById(pageId).classList.add('active');
+                    
+                    // Scroll to top
+                    window.scrollTo(0, 0);
+                }
+            });
+        });
+
+        // Login Modal
+        document.getElementById('login-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('login-modal').style.display = 'flex';
+        });
+
+        document.getElementById('close-login-modal').addEventListener('click', function() {
+            document.getElementById('login-modal').style.display = 'none';
+        });
+
+        document.querySelector('#login-modal .close-modal').addEventListener('click', function() {
+            document.getElementById('login-modal').style.display = 'none';
+        });
+
+        // Plan Selection Modal
+        function showPlanModal(plan) {
+            const modal = document.getElementById('plan-modal');
+            const title = document.getElementById('plan-modal-title');
+            const message = document.getElementById('plan-modal-message');
+            
+            if (plan === 'free') {
+                title.textContent = 'Free Plan';
+                message.textContent = 'The free plan is still under development. Please check back soon!';
+            } else {
+                title.textContent = 'Premium Plan';
+                message.textContent = 'This plan is still under development. Please check back soon!';
+            }
+            
+            modal.style.display = 'flex';
+        }
+
+        document.getElementById('close-plan-modal').addEventListener('click', function() {
+            document.getElementById('plan-modal').style.display = 'none';
+        });
+
+        document.querySelector('#plan-modal .close-modal').addEventListener('click', function() {
+            document.getElementById('plan-modal').style.display = 'none';
+        });
+
+        // Blog and Community Interactions
+        document.querySelectorAll('.post-action').forEach(action => {
+            action.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                const count = this.querySelector('span');
+                
+                if (icon.classList.contains('far')) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    count.textContent = parseInt(count.textContent) + 1;
+                    this.classList.add('active');
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    count.textContent = parseInt(count.textContent) - 1;
+                    this.classList.remove('active');
+                }
+            });
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(0, 0, 0, 0.95)';
+                header.style.padding = '15px 0';
+            } else {
+                header.style.background = 'rgba(0, 0, 0, 0.9)';
+                header.style.padding = '20px 0';
+            }
+        });
+
+        // Create particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random position
+                const left = Math.random() * 100;
+                const delay = Math.random() * 20;
+                const duration = 15 + Math.random() * 10;
+                
+                particle.style.left = `${left}%`;
+                particle.style.animationDelay = `${delay}s`;
+                particle.style.animationDuration = `${duration}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Load blog posts from API
+        async function loadBlogPosts() {
+            const blogGrid = document.getElementById('blog-grid');
+            const loading = document.getElementById('blog-loading');
+            
+            try {
+                // Using a free crypto news API (example)
+                const response = await fetch('https://newsapi.org/v2/everything?q=cryptocurrency&sortBy=publishedAt&apiKey=demo_key&pageSize=6');
+                const data = await response.json();
+                
+                // Hide loading spinner
+                loading.style.display = 'none';
+                blogGrid.style.display = 'grid';
+                
+                // Clear existing content
+                blogGrid.innerHTML = '';
+                
+                // Add blog posts
+                data.articles.slice(0, 6).forEach(article => {
+                    const blogCard = document.createElement('div');
+                    blogCard.classList.add('blog-card');
+                    
+                    blogCard.innerHTML = `
+                        <div class="blog-image">
+                            ${article.urlToImage ? `<img src="${article.urlToImage}" alt="${article.title}">` : '<i class="fas fa-newspaper"></i>'}
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span>${new Date(article.publishedAt).toLocaleDateString()}</span>
+                                <span>5 min read</span>
+                            </div>
+                            <h3 class="blog-title">${article.title}</h3>
+                            <p class="blog-excerpt">${article.description ? article.description.substring(0, 100) + '...' : 'Read more about this cryptocurrency news.'}</p>
+                        </div>
+                    `;
+                    
+                    // Add click event to open article
+                    blogCard.addEventListener('click', function() {
+                        window.open(article.url, '_blank');
+                    });
+                    
+                    blogGrid.appendChild(blogCard);
+                });
+            } catch (error) {
+                // Fallback if API fails
+                loading.style.display = 'none';
+                blogGrid.style.display = 'grid';
+                blogGrid.innerHTML = `
+                    <div class="blog-card">
+                        <div class="blog-image">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span>November 8, 2025</span>
+                                <span>5 min read</span>
+                            </div>
+                            <h3 class="blog-title">Understanding Market Volatility in 2025</h3>
+                            <p class="blog-excerpt">Explore how AI can help navigate unpredictable market conditions and identify opportunities during periods of high volatility.</p>
+                        </div>
+                    </div>
+                    <div class="blog-card">
+                        <div class="blog-image">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span>November 1, 2025</span>
+                                <span>7 min read</span>
+                            </div>
+                            <h3 class="blog-title">The Future of AI in Trading</h3>
+                            <p class="blog-excerpt">Discover how artificial intelligence is transforming the trading landscape and what to expect in the coming years.</p>
+                        </div>
+                    </div>
+                    <div class="blog-card">
+                        <div class="blog-image">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span>October 25, 2025</span>
+                                <span>4 min read</span>
+                            </div>
+                            <h3 class="blog-title">Risk Management Strategies for Crypto Trading</h3>
+                            <p class="blog-excerpt">Learn essential risk management techniques to protect your investments in the volatile cryptocurrency markets.</p>
+                        </div>
+                    </div>
+                `;
+                
+                // Add click events to fallback articles
+                document.querySelectorAll('.blog-card').forEach(card => {
+                    card.addEventListener('click', function() {
+                        window.open('https://www.coindesk.com', '_blank');
+                    });
+                });
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            loadBlogPosts();
+        });
+    </script>
+</body>
+</html>
